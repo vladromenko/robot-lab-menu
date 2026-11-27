@@ -47,6 +47,11 @@ def links(config: Config, choice: str) -> List[Tuple[str, str]]:
 
 
 def open_page(name: str, url: str) -> None:
+    if name == "Legacy CubeBot console":
+        print("Confirm the current robot operator has stopped and released its control session.")
+        print("Use the native console’s explicit control handover after opening.")
+        if read_choice("Type open to continue: ") != "open":
+            return
     result = get(url, want_json=False)
     if result.state not in ("available", "access_restricted"):
         print(f"{name} · {result.detail}  {url}")

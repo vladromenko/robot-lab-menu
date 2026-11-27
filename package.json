@@ -1,0 +1,12 @@
+{
+  "name": "homebrain-launcher-checks",
+  "private": true,
+  "scripts": {
+    "test": "node --test tests/native.test.js",
+    "check": "node scripts/check_native_style.js"
+  },
+  "devDependencies": {
+    "acorn": "8.15.0",
+    "acorn-walk": "8.3.4"
+  }
+}

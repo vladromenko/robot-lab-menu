@@ -1,4 +1,14 @@
-# Robot Lab
+# Homebrain
+
+Open one common laboratory workspace from your Mac. Download the Homebrain ZIP from this repository’s Releases, extract it, and open Install Homebrain.command once. The installer creates Homebrain.app in ~/Applications/Homebrain Launcher. Open that app or pin it in the Dock for later launches.
+
+Initial setup asks for your existing Homebrain SSH alias or destination, the remote deployment handover directory, and an installed browser. Settings are saved on the Mac. The integration project publishes the common service descriptor and owns browser sessions and task restoration. Homebrain.app uses macOS Cocoa, JavaScript for Automation and OpenSSH. No Mac Python installation is needed for the main app.
+
+See [Mac setup and recovery](docs/MAC_LAUNCHER.md) and the [short Russian installation guide](docs/INSTALL_RU.md).
+
+The Robot Lab terminal menu remains available as a recovery option.
+
+# Robot Lab recovery menu
 
 Open five existing Homebrain programs from one Mac or terminal menu.
 

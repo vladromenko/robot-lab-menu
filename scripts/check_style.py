@@ -18,7 +18,7 @@ def violations(path: Path) -> list:
 
 def main() -> int:
     root = Path(__file__).resolve().parents[1]
-    paths = sorted(path for part in ("src", "tests", "scripts") for path in (root / part).rglob("*.py"))
+    paths = sorted(path for part in ("src", "tests", "scripts", "native") for path in (root / part).rglob("*.py"))
     problems = [problem for path in paths for problem in violations(path)]
     print("\n".join(problems) if problems else f"Style gate passed for {len(paths)} Python files.")
     return int(bool(problems))

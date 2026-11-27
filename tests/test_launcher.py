@@ -102,7 +102,7 @@ class LauncherTest(unittest.TestCase):
         for option, suboption, expected in cases:
             with self.subTest(option=option, suboption=suboption):
                 with patch("robot_platform.cli.get", return_value=Result("available", "HTTP 200")):
-                    with patch("builtins.input", return_value=suboption), patch("webbrowser.open") as browser:
+                    with patch("builtins.input", side_effect=[suboption, "open"]), patch("webbrowser.open") as browser:
                         with contextlib.redirect_stdout(io.StringIO()):
                             choose(config, option, False)
                 browser.assert_called_once_with(expected, new=2)

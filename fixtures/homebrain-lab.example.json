@@ -1,0 +1,29 @@
+{
+  "fixture": true,
+  "descriptor_version": "homebrain.lab.v1",
+  "compatible_contract_version": "homebrain.lab.v1",
+  "source_commit": "0000000000000000000000000000000000000000",
+  "supported_launcher_versions": ["0.2.0"],
+  "service": {
+    "id": "homebrain-lab",
+    "origin": "http://127.0.0.1:8090",
+    "workspace_path": "/",
+    "health_path": "/api/health",
+    "health_expected": {"service_id": "homebrain-lab"}
+  },
+  "operations": {
+    "handoff": {
+      "argv": ["/example/homebrain-lab-launcher", "handoff"],
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    }
+  },
+  "authentication": {
+    "method": "ssh-once-form-post-v1",
+    "operation": "handoff",
+    "post_path": "/api/launcher/handoff",
+    "field": "ticket",
+    "resume_method": "Server restores the browser's existing task. Reopen Homebrain for a fresh login after expiry."
+  },
+  "browsers": [{"bundle_id": "com.google.Chrome", "viewer": "pending", "gamepad": "pending", "audio": "pending"}],
+  "installation_instructions": "Fixture only. The integration owner publishes the actual descriptor and installation procedure."
+}

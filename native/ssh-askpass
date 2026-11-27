@@ -1,0 +1,13 @@
+#!/bin/bash
+set -eu
+exec /usr/bin/osascript - "$@" <<'APPLESCRIPT'
+on run arguments
+    set question to item 1 of arguments
+    if question contains "yes/no" then
+        display dialog question with title "Homebrain SSH host" buttons {"Cancel", "Trust host"} default button "Trust host" cancel button "Cancel"
+        return "yes"
+    end if
+    display dialog question with title "Homebrain SSH authentication" default answer "" with hidden answer buttons {"Cancel", "Connect"} default button "Connect" cancel button "Cancel"
+    return text returned of result
+end run
+APPLESCRIPT
