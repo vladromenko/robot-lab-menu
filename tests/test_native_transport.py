@@ -99,6 +99,7 @@ printf '{"status":"ready"}\n'
         failed = subprocess.run(["ssh", "-F", str(self.server.config), "homebrain-test", self.reader],
                                 input=body, capture_output=True, timeout=5)
         self.assertEqual(failed.returncode, 5)
+        self.assertIn(b"script hash or executable mode does not match", failed.stderr)
         self.assertFalse((project / "unexpected").exists())
 
 
