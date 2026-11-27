@@ -1,6 +1,6 @@
 #!/bin/bash
 set -eu
-source_dir="$(cd -- "$(dirname -- "$0")" && pwd)"
+source_dir="$(cd -- "$(dirname "$0")" && pwd)"
 destination="$HOME/Applications/Homebrain Launcher"
 mkdir -p "$destination"
 if [ "$source_dir" != "$destination" ]; then
@@ -21,6 +21,14 @@ plist="$compiled/Contents/Info.plist"
 /usr/libexec/PlistBuddy -c "Set :CFBundleShortVersionString 0.2.0" "$plist"
 /usr/libexec/PlistBuddy -c "Set :CFBundleVersion 0.2.0" "$plist"
 /usr/bin/codesign --force --sign - "$compiled"
-/usr/bin/ditto "$compiled" "$destination/Homebrain.app"
+if [ -d "$destination/Homebrain.app" ]; then
+    /bin/mv "$destination/Homebrain.app" "$build_dir/previous.app"
+fi
+if ! /bin/mv "$compiled" "$destination/Homebrain.app"; then
+    if [ -d "$build_dir/previous.app" ]; then
+        /bin/mv "$build_dir/previous.app" "$destination/Homebrain.app"
+    fi
+    exit 1
+fi
 /usr/bin/open "$destination/Homebrain.app"
 printf '%s\n' 'Installed in Applications/Homebrain Launcher. Open Homebrain.app to launch.'

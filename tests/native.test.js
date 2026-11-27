@@ -118,3 +118,21 @@ test("an initial configuration error is not overwritten by transport monitoring"
     context.checkConnection();
     assert.equal(calls.length, 0);
 });
+
+test("a healthy common service is opened without any bootstrap start", () => {
+    const {context} = connectionContext();
+    const deployment = {...clone(example), fixture: false, deployed: true};
+    const operations = [];
+    context.HB.state = "/private/state";
+    context.HB.window = {orderOut: () => {}};
+    context.loadSettings = () => {};
+    context.browserSupport = () => {};
+    context.tunnel = () => {};
+    context.serviceHealth = () => true;
+    context.openAuthenticatedBrowser = () => { operations.push("handoff"); };
+    context.remote = (operation) => { operations.push(operation); return deployment; };
+    context.openWorkspace();
+    context.openWorkspace();
+    assert.deepEqual(operations, ["descriptor", "handoff", "descriptor", "handoff"]);
+    assert.equal(context.HB.monitor, true);
+});

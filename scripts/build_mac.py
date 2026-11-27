@@ -76,7 +76,7 @@ def build_app(destination: Path) -> None:
     (resources / "Homebrain.icns").write_bytes(make_icon())
     write_executable(executable / "Homebrain", """#!/bin/bash
 set -eu
-resources="$(cd -- "$(dirname -- "$0")/../Resources" && pwd)"
+resources="$(cd -- "$(dirname "$0")/../Resources" && pwd)"
 exec /usr/bin/osascript -l JavaScript "$resources/homebrain.js" "$resources" "$@"
 """)
 
@@ -84,7 +84,7 @@ exec /usr/bin/osascript -l JavaScript "$resources/homebrain.js" "$resources" "$@
 def shortcuts(destination: Path) -> None:
     write_executable(destination / "Homebrain.command", """#!/bin/bash
 set -eu
-bundle="$(cd -- "$(dirname -- "$0")" && pwd)/Homebrain.app"
+bundle="$(cd -- "$(dirname "$0")" && pwd)/Homebrain.app"
 exec /usr/bin/open "$bundle" --args "$@"
 """)
     write_executable(destination / "Install Homebrain.command", (ROOT / "native/install.sh").read_text())

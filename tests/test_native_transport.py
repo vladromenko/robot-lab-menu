@@ -1,6 +1,8 @@
 """Verify the actual fixed SSH helper, host-key checking and local forwarding."""
 
+import contextlib
 import hashlib
+import io
 import importlib.util
 import json
 import os
@@ -10,6 +12,8 @@ import subprocess
 import tempfile
 import unittest
 from pathlib import Path
+from types import SimpleNamespace
+from unittest.mock import patch
 
 from ssh_harness import SSHHarness, free_port
 
@@ -96,3 +100,12 @@ printf '{"status":"ready"}\n'
                                 input=body, capture_output=True, timeout=5)
         self.assertEqual(failed.returncode, 5)
         self.assertFalse((project / "unexpected").exists())
+
+
+    def test_start_text_is_normalized_without_claiming_health(self):
+        result = SimpleNamespace(returncode=0, stdout=b"Service start requested", stderr=b"")
+        with patch.object(REMOTE, "arguments", return_value=(["known-launcher", "start"], self.root)):
+            with patch.object(REMOTE.subprocess, "run", return_value=result):
+                with contextlib.redirect_stdout(io.StringIO()) as output:
+                    REMOTE.operation({}, "start")
+        self.assertEqual(json.loads(output.getvalue()), {"operation": "start", "accepted": True})

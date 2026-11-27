@@ -33,15 +33,12 @@ function openBrowser(fileURL, local) {
             checkedProcess("/usr/bin/open", ["-b", id, fileURL], "", 5);
         }
     } catch (error) {
-        var detail = String(error.message || error);
-        if (error.errorNumber === -1743 || /not authorized|not permitted/i.test(detail)) {
-            throw new Error("Allow Homebrain to automate your chosen browser in macOS Privacy & Security > Automation, then open Homebrain again.");
-        }
-        throw new Error("The chosen browser could not open Homebrain. " + detail.slice(0, 500));
+        throw browserFailure(error);
     }
 }
 
 function openAuthenticatedBrowser() {
+    prepareBrowser();
     var ticket = HomebrainCore.handoff(remote("handoff"));
     var origin = HomebrainCore.localOrigin(HB.settings);
     var file = HB.state + "/open-workspace.html";
@@ -68,5 +65,21 @@ function browserSupport() {
     });
     if (!found) {
         throw new Error("This deployment has not declared your selected browser as supported. Choose a declared browser in Connection Settings.");
+    }
+}
+
+function browserFailure(error) {
+    var detail = String(error.message || error);
+    if (error.errorNumber === -1743 || /not authorized|not permitted/i.test(detail)) {
+        return new Error("Allow Homebrain to automate your chosen browser in macOS Privacy & Security > Automation, then open Homebrain again.");
+    }
+    return new Error("The chosen browser could not open Homebrain. " + detail.slice(0, 500));
+}
+
+function prepareBrowser() {
+    try {
+        Application(HB.settings.browser_bundle_id).windows();
+    } catch (error) {
+        throw browserFailure(error);
     }
 }

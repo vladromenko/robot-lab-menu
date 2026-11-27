@@ -3,17 +3,41 @@
   "descriptor_version": "homebrain.lab.v1",
   "compatible_contract_version": "homebrain.lab.v1",
   "source_commit": "0000000000000000000000000000000000000000",
-  "supported_launcher_versions": ["0.2.0"],
+  "supported_launcher_versions": [
+    "0.2.0"
+  ],
   "service": {
     "id": "homebrain-lab",
     "origin": "http://127.0.0.1:8090",
-    "workspace_path": "/",
+    "workspace_path": "/lab",
     "health_path": "/api/health",
-    "health_expected": {"service_id": "homebrain-lab"}
+    "health_expected": {
+      "service_id": "homebrain-lab"
+    }
   },
   "operations": {
+    "status": {
+      "argv": [
+        "/example/scripts/homebrain-lab-launcher",
+        "status"
+      ],
+      "cwd": "/example",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
+    "start": {
+      "argv": [
+        "/example/scripts/homebrain-lab-launcher",
+        "start"
+      ],
+      "cwd": "/example",
+      "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
+    },
     "handoff": {
-      "argv": ["/example/homebrain-lab-launcher", "handoff"],
+      "argv": [
+        "/example/scripts/homebrain-lab-launcher",
+        "handoff"
+      ],
+      "cwd": "/example",
       "sha256": "0000000000000000000000000000000000000000000000000000000000000000"
     }
   },
@@ -24,6 +48,14 @@
     "field": "ticket",
     "resume_method": "Server restores the browser's existing task. Reopen Homebrain for a fresh login after expiry."
   },
-  "browsers": [{"bundle_id": "com.google.Chrome", "viewer": "pending", "gamepad": "pending", "audio": "pending"}],
-  "installation_instructions": "Fixture only. The integration owner publishes the actual descriptor and installation procedure."
+  "browsers": [
+    {
+      "bundle_id": "com.google.Chrome",
+      "viewer": "pending",
+      "gamepad": "pending",
+      "audio": "pending"
+    }
+  ],
+  "installation_instructions": "Fixture only. The integration owner publishes the actual descriptor and installation procedure.",
+  "deployed": false
 }

@@ -106,6 +106,17 @@ function createWindow() {
     bringWindow();
 }
 
+function existingInstance(pid, folder) {
+    if (/^[1-9][0-9]*$/.test(pid)) {
+        var result = process("/bin/ps", ["-p", pid, "-o", "command="], "", 3);
+        return result.code === 0 && (result.output.indexOf("Homebrain.app/Contents/MacOS/") !== -1 ||
+            result.output.indexOf(HB.resources + "/homebrain.js") !== -1);
+    }
+    var information = FS.attributesOfItemAtPathError($(folder), null);
+    var changed = information.objectForKey("NSFileModificationDate");
+    return Math.abs(changed.timeIntervalSinceNow) < 10;
+}
+
 function ownInstance() {
     var folder = HB.state + "/app.lock";
     var result = process("/bin/mkdir", [folder], "", 3);
@@ -116,7 +127,7 @@ function ownInstance() {
             pump(0.5);
             pid = exists(pidFile) ? readText(pidFile).trim() : "";
         }
-        if (/^[1-9][0-9]*$/.test(pid) && process("/bin/kill", ["-0", pid], "", 3).code === 0) {
+        if (existingInstance(pid, folder)) {
             writeText(HB.state + "/open-request", String(Date.now()));
             return false;
         }

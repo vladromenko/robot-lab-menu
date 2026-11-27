@@ -56,7 +56,7 @@ def operation(deployment: dict, name: str) -> None:
         raise ValueError(f"Homebrain Lab {name} failed with exit code {completed.returncode}.")
     if len(completed.stdout) > MAX_BYTES:
         raise ValueError("Homebrain Lab operation response exceeds the size limit.")
-    response = json.loads(completed.stdout)
+    response = {"operation": "start", "accepted": True} if name == "start" else json.loads(completed.stdout)
     if not isinstance(response, dict):
         raise ValueError("Homebrain Lab operation returned an invalid response.")
     print(json.dumps(response, allow_nan=False))
