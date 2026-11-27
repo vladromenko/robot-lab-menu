@@ -20,6 +20,8 @@ The icon is an original vector house/H mark. The ZIP contains Homebrain.app, the
 
 Native Finder, browser Automation, gamepad, viewer/audio and sleep behavior require an attended Mac check. Record actual results here before marking those paths verified. Linux checks cover descriptor parsing, shell quoting, pinned operation dispatch, archive permissions and SSH/tunnel behavior.
 
+The automated suite passes 13 JavaScript checks and 15 Python checks. Isolated OpenSSH checks execute the fixed remote helper and the native connection code with real SSH processes. They cover changed host keys, a busy port, pinned operation scripts, and replacement of a stale owned control socket followed by reuse of one master connection.
+
 ## Build and checks
 
 Install the development-only JavaScript parser dependencies with npm ci. Run npm test, npm run check, python3 scripts/check_style.py, and PYTHONPATH=src python3 -m unittest discover -s tests -v. Pillow is needed only for building the icon. Build into a new directory with python3 scripts/build_mac.py --output /absolute/output/path.

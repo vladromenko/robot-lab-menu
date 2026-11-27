@@ -110,3 +110,18 @@ printf '{"status":"ready"}\n'
                 with contextlib.redirect_stdout(io.StringIO()) as output:
                     REMOTE.operation({}, "start")
         self.assertEqual(json.loads(output.getvalue()), {"operation": "start", "accepted": True})
+
+    def test_native_connection_replaces_a_dead_socket_and_reuses_one_real_master(self):
+        with tempfile.TemporaryDirectory(prefix="hb-stale-check-") as temporary:
+            control = Path(temporary) / "ssh.sock"
+            stale = socket.socket(socket.AF_UNIX)
+            stale.bind(str(control))
+            stale.close()
+            value = {"ssh_config": str(self.server.config), "socket_dir": temporary, "local_port": free_port()}
+            try:
+                reply = subprocess.run(["node", "tests/native_transport_runner.js"], input=json.dumps(value).encode(),
+                                       cwd=ROOT, capture_output=True, timeout=25, check=True)
+                self.assertEqual(json.loads(reply.stdout), {"stale_socket_recovered": True, "masters_started": 1})
+            finally:
+                subprocess.run(["ssh", "-F", str(self.server.config), "-S", str(control), "-O", "exit", "homebrain-test"],
+                               capture_output=True, check=False)

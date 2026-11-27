@@ -53,6 +53,7 @@ function connectionContext() {
         exists: (path) => files[path] !== undefined,
         jsonFile: (path) => JSON.parse(files[path]),
         writeText: (path, value) => { files[path] = value; },
+        remove: (path) => { delete files[path]; },
         readText: () => "fixed remote helper",
         resources: (name) => name,
         checkedProcess: (program, argv) => { calls.push(argv); return "{}"; },
@@ -143,4 +144,26 @@ test("existing strict host-key verification is honored and disabled checking is 
     assert.equal(context.sshArgs().includes("StrictHostKeyChecking=yes"), true);
     context.process = () => ({code: 0, output: "stricthostkeychecking false\n"});
     assert.equal(context.sshArgs().includes("StrictHostKeyChecking=ask"), true);
+});
+
+test("a dead owned control socket is removed before creating the replacement tunnel", () => {
+    const {context, files, calls} = connectionContext();
+    const socket = context.HB.temporary + "/ssh.sock";
+    files[socket] = "stale";
+    context.process = (program, argv) => argv.includes("-G") ?
+        {code: 0, output: "stricthostkeychecking yes\n"} : {code: 255};
+    context.checkedProcess = (program, argv) => {
+        assert.equal(files[socket], undefined);
+        calls.push(argv);
+        return "";
+    };
+    context.tunnel();
+    assert.equal(calls.length, 1);
+});
+
+test("an active unjournaled tunnel is preserved until an explicit settings reset", () => {
+    const {context, files, calls} = connectionContext();
+    files[context.HB.temporary + "/ssh.sock"] = "active";
+    assert.throws(() => context.tunnel(), /Save Connection Settings/);
+    assert.equal(calls.length, 0);
 });

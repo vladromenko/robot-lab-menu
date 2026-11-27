@@ -58,6 +58,7 @@ function tunnel() {
     if (tunnelAlive()) {
         return;
     }
+    clearStaleControl();
     var service = HomebrainCore.origin(HB.deployment.service.origin);
     var forward = "127.0.0.1:" + HB.settings.local_port + ":" + service.host + ":" + service.port;
     var args = sshArgs().concat(["-M", "-S", HB.temporary + "/ssh.sock",
@@ -69,9 +70,20 @@ function tunnel() {
     }));
 }
 
+function clearStaleControl() {
+    var socket = HB.temporary + "/ssh.sock";
+    if (exists(socket)) {
+        var check = process("/usr/bin/ssh", ["-S", socket, "-O", "check", HB.settings.ssh_destination], "", 3);
+        if (check.code === 0) {
+            throw new Error("A previous Homebrain tunnel has no matching connection record. Save Connection Settings to close that owned tunnel, then reopen.");
+        }
+        remove(socket);
+    }
+}
+
 function disconnectTunnel() {
     var saved = HB.state + "/locator.json";
-    if (exists(HB.temporary + "/tunnel.json") && exists(saved)) {
+    if ((exists(HB.temporary + "/tunnel.json") || exists(HB.temporary + "/ssh.sock")) && exists(saved)) {
         var prior = jsonFile(saved);
         process("/usr/bin/ssh", ["-S", HB.temporary + "/ssh.sock",
             "-O", "exit", prior.ssh_destination], "", 3);
