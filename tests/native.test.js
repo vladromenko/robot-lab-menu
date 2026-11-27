@@ -136,3 +136,11 @@ test("a healthy common service is opened without any bootstrap start", () => {
     assert.deepEqual(operations, ["descriptor", "handoff", "descriptor", "handoff"]);
     assert.equal(context.HB.monitor, true);
 });
+
+test("existing strict host-key verification is honored and disabled checking is rejected", () => {
+    const {context} = connectionContext();
+    context.process = () => ({code: 0, output: "stricthostkeychecking true\n"});
+    assert.equal(context.sshArgs().includes("StrictHostKeyChecking=yes"), true);
+    context.process = () => ({code: 0, output: "stricthostkeychecking false\n"});
+    assert.equal(context.sshArgs().includes("StrictHostKeyChecking=ask"), true);
+});

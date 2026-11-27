@@ -3,8 +3,19 @@ function shellQuote(value) {
     return "'" + value.replace(/'/g, "'\\''") + "'";
 }
 
+function hostKeyPolicy() {
+    var result = process("/usr/bin/ssh", ["-G", HB.settings.ssh_destination], "", 5);
+    if (result.code !== 0) {
+        throw new Error("The saved SSH configuration could not be read. " + result.error.trim());
+    }
+    var found = /^stricthostkeychecking[ \t]+([^ \t\r\n]+)/m.exec(result.output || "");
+    var mode = found ? found[1] : "ask";
+    if (mode === "true") mode = "yes";
+    return ["yes", "ask", "accept-new"].indexOf(mode) !== -1 ? mode : "ask";
+}
+
 function sshArgs() {
-    return ["-T", "-o", "StrictHostKeyChecking=ask", "-o", "ConnectTimeout=8",
+    return ["-T", "-o", "StrictHostKeyChecking=" + hostKeyPolicy(), "-o", "ConnectTimeout=8",
         "-o", "ServerAliveInterval=15", "-o", "ServerAliveCountMax=3"];
 }
 
