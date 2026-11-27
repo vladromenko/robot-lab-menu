@@ -1,0 +1,31 @@
+{
+  "checked_at": "2026-11-27T19:33:11+03:00",
+  "status": "blocked_waiting_for_integration_descriptor",
+  "descriptor_version": "homebrain.lab.v1",
+  "physical_actions": 0,
+  "mac_finder": "pending",
+  "mac_browser_viewer_gamepad_audio": "pending",
+  "ssh_descriptor_read": {
+    "exit_code": 4,
+    "error": "Homebrain Lab has not published its deployment descriptor or launcher script."
+  },
+  "actual_service_observations": [
+    {
+      "url": "http://127.0.0.1:8090/api/health",
+      "error": "<urlopen error [Errno 111] Connection refused>"
+    },
+    {
+      "url": "http://127.0.0.1:8090/lab",
+      "error": "<urlopen error [Errno 111] Connection refused>"
+    },
+    {
+      "url": "http://127.0.0.1:8096/api/health",
+      "error": "<urlopen error [Errno 111] Connection refused>"
+    },
+    {
+      "url": "http://127.0.0.1:8096/lab",
+      "error": "<urlopen error [Errno 111] Connection refused>"
+    }
+  ],
+  "browser_cookie_handoff": "blocked until the actual descriptor declares the origin and pinned handoff operation"
+}

@@ -6,6 +6,8 @@ Initial setup asks for your existing Homebrain SSH alias or destination, the rem
 
 See [Mac setup and recovery](docs/MAC_LAUNCHER.md) and the [short Russian installation guide](docs/INSTALL_RU.md).
 
+Preview status on 27 November 2026. Packaging and isolated SSH checks pass. The full authenticated launch is waiting for the integration project's actual deployment descriptor. The latest [real service check](docs/live-launcher-check.json) records that dependency. Mac Finder installation, browser Automation, viewer/gamepad/audio and sleep recovery still require attended Mac validation.
+
 The Robot Lab terminal menu remains available as a recovery option.
 
 # Robot Lab recovery menu
