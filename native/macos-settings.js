@@ -37,9 +37,19 @@ function answer(prompt, defaultValue) {
     return response.textReturned.trim();
 }
 
+function connectionSummary() {
+    var path = HB.state + "/deployment.json";
+    if (!exists(path)) {
+        return "";
+    }
+    var known = jsonFile(path);
+    return "\nLast service: " + known.service.origin + known.service.workspace_path +
+        "\nSource: " + known.source_commit.slice(0, 12);
+}
+
 function settingsDialog() {
     var current = HB.settings || {};
-    var destination = answer("Existing SSH host alias or user@host for Homebrain", current.ssh_destination || initialDestination());
+    var destination = answer("Existing SSH host alias or user@host for Homebrain" + connectionSummary(), current.ssh_destination || initialDestination());
     var directory = answer("Deployment handover directory on Homebrain", current.handover_dir || HomebrainCore.DEFAULT_HANDOVER);
     var port = Number(answer("Local tunnel port on this Mac", String(current.local_port || 18490)));
     var installed = installedBrowsers();

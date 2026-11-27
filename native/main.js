@@ -12,8 +12,9 @@ function eventLoop(argv) {
     while (!HB.quitting) {
         pump(0.1);
         if (exists(HB.state + "/open-request")) {
+            var requested = Number(readText(HB.state + "/open-request"));
             remove(HB.state + "/open-request");
-            HB.action = "open";
+            if (!HB.connected || requested > (HB.lastOpenCompleted || 0)) HB.action = "open";
         }
         if (HB.action) {
             performAction();

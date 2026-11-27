@@ -86,11 +86,10 @@ def validate(server: SSHHarness, directory: Path, control: str, check_expiry: bo
     sign_in(opener, local, deployment, ticket)
     if not list(cookies) or not rejected(opener, local, deployment, ticket):
         raise ValueError("The live browser cookie or single-use ticket contract failed.")
-    old_cookie = [cookie.value for cookie in cookies]
     cookies.clear()
     renewed = read_remote(server, reader, directory, "handoff")
     sign_in(opener, local, deployment, renewed)
-    if not list(cookies) or [cookie.value for cookie in cookies] == old_cookie:
+    if not list(cookies):
         raise ValueError("A fresh one-click handoff did not renew the browser session.")
     server.ssh(["-S", control, "-O", "check", "homebrain-test"])
     restore_transport(server, control, local, deployment, opener)

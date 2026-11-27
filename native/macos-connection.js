@@ -102,6 +102,7 @@ function waitForService() {
 }
 
 function openWorkspace() {
+    HB.monitor = false;
     status("Connecting", "Reading the deployment descriptor from Homebrain…");
     loadSettings();
     HB.deployment = HomebrainCore.descriptor(remote("descriptor"));
@@ -121,6 +122,8 @@ function openWorkspace() {
     status("Connecting", "Opening the authenticated workspace…");
     openAuthenticatedBrowser();
     HB.connected = true;
+    HB.monitor = true;
+    HB.lastOpenCompleted = Date.now();
     HB.retryDelay = 3;
     HB.nextCheck = Date.now() + 5000;
     writeText(HB.state + "/deployment.json", JSON.stringify({
@@ -132,7 +135,7 @@ function openWorkspace() {
 }
 
 function checkConnection() {
-    if (!HB.deployment || Date.now() < HB.nextCheck) {
+    if (!HB.monitor || !HB.deployment || Date.now() < HB.nextCheck) {
         return;
     }
     HB.nextCheck = Date.now() + HB.retryDelay * 1000;

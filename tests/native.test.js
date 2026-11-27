@@ -91,6 +91,7 @@ test("an unrelated service cannot be accepted as ready", () => {
 
 test("network restoration reconnects transport without issuing browser auth or arming", () => {
     const {context, calls} = connectionContext();
+    context.HB.monitor = true;
     context.HB.retryDelay = 1;
     context.HB.nextCheck = 0;
     context.HB.connected = false;
@@ -99,4 +100,21 @@ test("network restoration reconnects transport without issuing browser auth or a
     assert.equal(context.HB.connected, true);
     assert.equal(calls.length, 1);
     assert.equal(calls[0].includes("-N"), true);
+});
+
+test("the exact native shell quoting preserves a remote helper with quotes and newlines", () => {
+    const {context} = connectionContext();
+    const input = "import json\nprint('a path with spaces; and $characters')";
+    const quoted = context.shellQuote(input);
+    const {execFileSync} = require("child_process");
+    const result = execFileSync("/bin/sh", ["-c", "printf %s " + quoted], {encoding: "utf8"});
+    assert.equal(result, input);
+});
+
+test("an initial configuration error is not overwritten by transport monitoring", () => {
+    const {context, calls} = connectionContext();
+    context.HB.monitor = false;
+    context.HB.nextCheck = 0;
+    context.checkConnection();
+    assert.equal(calls.length, 0);
 });

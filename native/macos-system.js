@@ -1,6 +1,6 @@
 /* Native macOS I/O. All process arguments are passed as arrays. */
 ObjC.import("Cocoa");
-var HB = {quitting: false, action: "", connected: false, nextCheck: 0, retryDelay: 3};
+var HB = {quitting: false, action: "", connected: false, nextCheck: 0, retryDelay: 3, monitor: false, busy: false};
 var FS = $.NSFileManager.defaultManager;
 
 function string(value) {

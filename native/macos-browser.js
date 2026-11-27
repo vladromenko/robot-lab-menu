@@ -33,7 +33,11 @@ function openBrowser(fileURL, local) {
             checkedProcess("/usr/bin/open", ["-b", id, fileURL], "", 5);
         }
     } catch (error) {
-        throw new Error("Allow Homebrain to automate your chosen browser in macOS Privacy & Security > Automation, then open Homebrain again.");
+        var detail = String(error.message || error);
+        if (error.errorNumber === -1743 || /not authorized|not permitted/i.test(detail)) {
+            throw new Error("Allow Homebrain to automate your chosen browser in macOS Privacy & Security > Automation, then open Homebrain again.");
+        }
+        throw new Error("The chosen browser could not open Homebrain. " + detail.slice(0, 500));
     }
 }
 
@@ -55,6 +59,9 @@ function removeExpiredForm() {
 }
 
 function browserSupport() {
+    if (installedBrowsers().indexOf(HB.settings.browser_bundle_id) === -1) {
+        throw new Error("The saved browser is not installed. Choose an installed browser in Connection Settings.");
+    }
     var supported = HB.deployment.browsers || [];
     var found = supported.some(function (browser) {
         return browser.bundle_id === HB.settings.browser_bundle_id;

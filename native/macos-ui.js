@@ -37,13 +37,13 @@ function delegates() {
         superclass: "NSObject",
         protocols: ["NSApplicationDelegate", "NSWindowDelegate"],
         methods: {
-            "openWorkspace:": {types: ["void", ["id"]], implementation: function () { HB.action = "open"; }},
+            "openWorkspace:": {types: ["void", ["id"]], implementation: function () { if (!HB.busy) HB.action = "open"; }},
             "connectionSettings:": {types: ["void", ["id"]], implementation: function () { HB.action = "settings"; }},
             "recoveryMenu:": {types: ["void", ["id"]], implementation: function () { HB.action = "recovery"; }},
             "quitLauncher:": {types: ["void", ["id"]], implementation: function () { HB.quitting = true; }},
             "applicationShouldHandleReopen:hasVisibleWindows:": {
                 types: ["bool", ["id", "bool"]], implementation: function () {
-                    HB.action = "open";
+                    if (!HB.busy) HB.action = "open";
                     bringWindow();
                     return true;
                 }
@@ -117,7 +117,7 @@ function ownInstance() {
             pid = exists(pidFile) ? readText(pidFile).trim() : "";
         }
         if (/^[1-9][0-9]*$/.test(pid) && process("/bin/kill", ["-0", pid], "", 3).code === 0) {
-            writeText(HB.state + "/open-request", "open");
+            writeText(HB.state + "/open-request", String(Date.now()));
             return false;
         }
         remove(pidFile);
@@ -131,6 +131,7 @@ function ownInstance() {
 function performAction() {
     var action = HB.action;
     HB.action = "";
+    HB.busy = true;
     try {
         if (action === "settings") {
             settingsDialog();
@@ -149,5 +150,7 @@ function performAction() {
         HB.connected = false;
         status("Connection needs attention", String(error.message || error).slice(0, 800));
         bringWindow();
+    } finally {
+        HB.busy = false;
     }
 }
