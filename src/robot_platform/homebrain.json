@@ -1,0 +1,23 @@
+{
+  "source": "Robot Lab defaults",
+  "targets": {
+    "wrist": {
+      "url": "http://homebrain.local:8020",
+      "unit": "so101-ai-learning-ui.service"
+    },
+    "explorer": {
+      "url": "http://homebrain.local:8030",
+      "unit": "explorer3-ui.service"
+    },
+    "mlflow": {
+      "url": "http://homebrain.local:5020",
+      "unit": "so101-ai-learning-mlflow.service"
+    },
+    "legacy_cube": {
+      "url": "",
+      "unit": "rosmaster-console.service"
+    }
+  },
+  "homebrain_ssh": "",
+  "homebrain_launcher": ""
+}

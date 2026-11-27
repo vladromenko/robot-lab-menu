@@ -1,0 +1,14 @@
+{
+  "source": "Example settings for running on the Homebrain host",
+  "targets": {
+    "wrist": {
+      "url": "http://127.0.0.1:8020"
+    },
+    "explorer": {
+      "url": "http://127.0.0.1:8030"
+    },
+    "mlflow": {
+      "url": "http://127.0.0.1:5020"
+    }
+  }
+}
