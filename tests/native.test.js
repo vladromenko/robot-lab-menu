@@ -167,3 +167,64 @@ test("an active unjournaled tunnel is preserved until an explicit settings reset
     assert.throws(() => context.tunnel(), /Save Connection Settings/);
     assert.equal(calls.length, 0);
 });
+
+function headlessContext() {
+    const files = {};
+    const context = {HB: {state: "/private/homebrain", settings: {}}, Date, JSON, HomebrainCore: core,
+        Application: {currentApplication: () => ({})}, configure: () => {},
+        exists: (path) => files[path] !== undefined, jsonFile: (path) => JSON.parse(files[path]),
+        writeText: (path, value) => { files[path] = value; }, remove: (path) => { delete files[path]; }};
+    vm.createContext(context);
+    vm.runInContext(fs.readFileSync("native/headless.js", "utf8"), context);
+    return {context, files};
+}
+
+test("the simple launcher confirms the browser without starting a healthy service", () => {
+    const {context, files} = headlessContext();
+    const calls = [];
+    context.loadSettings = () => {};
+    context.remote = (operation) => { calls.push(operation); return {...clone(example), fixture: false, deployed: true}; };
+    context.browserSupport = () => {};
+    context.tunnel = () => { calls.push("tunnel"); };
+    context.serviceHealth = () => true;
+    context.openAuthenticatedBrowser = () => { calls.push("handoff"); };
+    context.workspaceConfirmation = () => { calls.push("confirmed_browser"); };
+    context.launchWorkspace();
+    assert.deepEqual(calls, ["descriptor", "tunnel", "handoff", "confirmed_browser"]);
+    assert.equal(JSON.parse(files[context.HB.state + "/connection-status.json"]).state, "Ready");
+});
+
+test("the applet idle check restores transport without authentication, bootstrap or browser actions", () => {
+    const {context, files} = headlessContext();
+    const calls = [];
+    files[context.HB.state + "/deployment.json"] = JSON.stringify({service: example.service});
+    context.loadSettings = () => { calls.push("settings"); };
+    context.tunnel = () => { calls.push("tunnel"); };
+    context.serviceHealth = () => { calls.push("health"); return true; };
+    context.remote = () => { throw new Error("Idle must not issue a remote operation"); };
+    context.openAuthenticatedBrowser = () => { throw new Error("Idle must not authenticate a browser"); };
+    context.run(["resources", "--reconnect"]);
+    assert.deepEqual(calls, ["settings", "tunnel", "health"]);
+});
+
+test("standard opening invokes macOS without browser Apple events", () => {
+    const calls = [];
+    const context = {HB: {settings: {browser_bundle_id: "com.apple.Safari", browser_open_mode: "standard"}},
+        Application: () => { throw new Error("Standard opening must not automate the browser"); },
+        checkedProcess: (program, argv) => { calls.push({program, argv: Array.from(argv)}); }};
+    vm.createContext(context);
+    vm.runInContext(fs.readFileSync("native/macos-browser.js", "utf8"), context);
+    context.prepareBrowser();
+    context.openBrowser("file:///private/open-workspace.html", "http://127.0.0.1:18490");
+    assert.deepEqual(calls, [{program: "/usr/bin/open", argv: ["-b", "com.apple.Safari", "file:///private/open-workspace.html"]}]);
+});
+
+test("standard viewing fallback still requires the selected browser to be installed", () => {
+    const context = {HB: {settings: {browser_bundle_id: "com.apple.Safari", browser_open_mode: "standard"},
+        deployment: {browsers: [{bundle_id: "com.google.Chrome"}]}}, installedBrowsers: () => ["com.apple.Safari"]};
+    vm.createContext(context);
+    vm.runInContext(fs.readFileSync("native/macos-browser.js", "utf8"), context);
+    context.browserSupport();
+    context.installedBrowsers = () => [];
+    assert.throws(() => context.browserSupport(), /not installed/);
+});

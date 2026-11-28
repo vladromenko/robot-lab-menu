@@ -9,7 +9,7 @@ fi
 build_dir="$(mktemp -d "$destination/.native-build.XXXXXX")"
 trap 'rm -rf "$build_dir"' EXIT
 compiled="$build_dir/Homebrain.app"
-/usr/bin/osacompile -l JavaScript -o "$compiled"     "$source_dir/Homebrain.app/Contents/Resources/homebrain.js"
+/usr/bin/osacompile -s -l AppleScript -o "$compiled" "$source_dir/Homebrain.app/Contents/Resources/launcher.applescript"
 /usr/bin/ditto "$source_dir/Homebrain.app/Contents/Resources" "$compiled/Contents/Resources"
 plist="$compiled/Contents/Info.plist"
 set_plist() {

@@ -1,0 +1,14 @@
+{
+  "platform": "Linux",
+  "browser_engine": "Chromium",
+  "file_origin_form_post": "passed",
+  "workspace_loaded_twice": true,
+  "session_cookie": "present",
+  "unauthorized_workspace_responses": [],
+  "tokens_in_url": false,
+  "viewer_gamepad_audio": "pending_attended_mac",
+  "physical_actions": 0,
+  "browser_version": "145.0.7632.0",
+  "checked_on": "2026-11-28",
+  "service_source_commit": "4dd3fbc8c301d7f72cbd24d3eed955111afb2333"
+}

@@ -17,6 +17,10 @@ function existingTab(application, local, file) {
 
 function openBrowser(fileURL, local) {
     var id = HB.settings.browser_bundle_id;
+    if (HB.settings.browser_open_mode === "standard") {
+        checkedProcess("/usr/bin/open", ["-b", id, fileURL], "", 5);
+        return;
+    }
     var application = Application(id);
     try {
         var existing = existingTab(application, local, fileURL);
@@ -63,6 +67,7 @@ function browserSupport() {
     var found = supported.some(function (browser) {
         return browser.bundle_id === HB.settings.browser_bundle_id;
     });
+    if (!found && HB.settings.browser_open_mode === "standard") return;
     if (!found) {
         throw new Error("This deployment has not declared your selected browser as supported. Choose a declared browser in Connection Settings.");
     }
@@ -77,6 +82,7 @@ function browserFailure(error) {
 }
 
 function prepareBrowser() {
+    if (HB.settings.browser_open_mode === "standard") return;
     try {
         Application(HB.settings.browser_bundle_id).windows();
     } catch (error) {

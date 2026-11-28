@@ -67,7 +67,8 @@ function settingsDialog() {
     }
     var index = choices.indexOf(selected[0]);
     var value = {version: 1, ssh_destination: destination, handover_dir: directory,
-        local_port: port, browser_bundle_id: installed[index]};
+        local_port: port, browser_bundle_id: installed[index],
+        browser_open_mode: current.browser_open_mode || "standard"};
     HomebrainCore.locator(value);
     if (HB.settings) {
         disconnectTunnel();
@@ -83,6 +84,7 @@ function loadSettings() {
     if (!HB.settings) {
         settingsDialog();
     }
+    HB.settings.browser_open_mode = HB.settings.browser_open_mode || "standard";
     var environment = ObjC.deepUnwrap($.NSProcessInfo.processInfo.environment);
     if (environment.HOMEBRAIN_LAB_HANDOVER_DIR) {
         HB.settings.handover_dir = environment.HOMEBRAIN_LAB_HANDOVER_DIR;

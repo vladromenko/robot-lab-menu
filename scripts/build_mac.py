@@ -71,13 +71,17 @@ def build_app(destination: Path) -> None:
     (bundle / "PkgInfo").write_bytes(b"APPL????")
     script = "\n".join((ROOT / "native" / name).read_text() for name in SOURCES)
     (resources / "homebrain.js").write_text(script, encoding="utf-8")
+    headless = script[:script.index("/* Application entry point.")]
+    configure = (ROOT / "native/main.js").read_text().split("function eventLoop")[0]
+    (resources / "headless.js").write_text(headless + configure + (ROOT / "native/headless.js").read_text())
+    shutil.copy2(ROOT / "native/launcher.applescript", resources)
     for name in ("remote.py", "ssh-askpass"):
         shutil.copy2(ROOT / "native" / name, resources / name)
     (resources / "Homebrain.icns").write_bytes(make_icon())
     write_executable(executable / "Homebrain", """#!/bin/bash
 set -eu
 resources="$(cd -- "$(dirname "$0")/../Resources" && pwd)"
-exec /usr/bin/osascript -l JavaScript "$resources/homebrain.js" "$resources" "$@"
+exec /usr/bin/osascript -l JavaScript "$resources/headless.js" "$resources" "$@"
 """)
 
 
@@ -88,6 +92,11 @@ bundle="$(cd -- "$(dirname "$0")" && pwd)/Homebrain.app"
 exec /usr/bin/open "$bundle" --args "$@"
 """)
     write_executable(destination / "Install Homebrain.command", (ROOT / "native/install.sh").read_text())
+    write_executable(destination / "Homebrain Settings.command", """#!/bin/bash
+set -eu
+resources="$(cd -- "$(dirname "$0")" && pwd)/Homebrain.app/Contents/Resources"
+exec /usr/bin/osascript -l JavaScript "$resources/headless.js" "$resources" --settings
+""")
 
 
 def archive(directory: Path, target: Path) -> None:

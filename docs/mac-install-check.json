@@ -1,0 +1,39 @@
+{
+  "checked_at": "2026-11-28T17:32:42+03:00",
+  "macos": "15.6.1",
+  "installation": "~/Applications/Homebrain Launcher/Homebrain.app",
+  "native_compilation": "passed",
+  "signature_verification": "passed",
+  "dock_entries": 1,
+  "previous_dock_apps_preserved": true,
+  "existing_lan_ssh": "passed",
+  "tunneled_service": {
+    "service_id": "homebrain-lab",
+    "contract_version": "homebrain.lab.v1",
+    "source_commit": "4dd3fbc8c301d7f72cbd24d3eed955111afb2333",
+    "status": "ready"
+  },
+  "browser_launch": {
+    "workspace_url": "http://127.0.0.1:18490/lab",
+    "browser_bundle_id": "com.apple.Safari",
+    "method": "macOS Launch Services",
+    "requested_at": "2026-11-28T14:35:01.643Z",
+    "capability_validation": "Viewer, gamepad and audio require separate browser acceptance."
+  },
+  "browser_page_visual_acceptance": "pending operator reply",
+  "mac_finder_double_click": "pending literal Finder action; actual Mac Launch Services invocation checked",
+  "viewer_gamepad_audio": "pending",
+  "sleep_recovery": "pending",
+  "physical_actions": 0,
+  "installed_worker_sha256": "e57f8521293d9a17130e663217d42b2b5ac9b80fc9c43ea7b07e5969faeea1ed",
+  "installed_settings_shortcut": "Homebrain Settings.command",
+  "installed_worker_matches_package": true,
+  "authenticated_mac_handoff": {
+    "browser_bundle_id": "com.apple.Safari",
+    "mac_requested_at": "2026-11-28T14:35:01.643Z",
+    "issued_at": "2026-11-28T14:35:01.955964+00:00",
+    "consumed_at": "2026-11-28T14:35:02.297425+00:00",
+    "result": "passed",
+    "method": "Read-only consumption timestamp matched to the actual Mac browser launch; ticket and digest values were not selected."
+  }
+}

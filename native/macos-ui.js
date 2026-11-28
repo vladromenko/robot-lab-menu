@@ -35,7 +35,7 @@ function delegates() {
     ObjC.registerSubclass({
         name: "HomebrainWindowDelegate",
         superclass: "NSObject",
-        protocols: ["NSApplicationDelegate", "NSWindowDelegate"],
+        protocols: ["NSWindowDelegate"],
         methods: {
             "openWorkspace:": {types: ["void", ["id"]], implementation: function () { if (!HB.busy) HB.action = "open"; }},
             "connectionSettings:": {types: ["void", ["id"]], implementation: function () { HB.action = "settings"; }},
@@ -110,7 +110,8 @@ function existingInstance(pid, folder) {
     if (/^[1-9][0-9]*$/.test(pid)) {
         var result = process("/bin/ps", ["-p", pid, "-o", "command="], "", 3);
         return result.code === 0 && (result.output.indexOf("Homebrain.app/Contents/MacOS/") !== -1 ||
-            result.output.indexOf(HB.resources + "/homebrain.js") !== -1);
+            result.output.indexOf(HB.resources + "/homebrain.js") !== -1 ||
+            result.output.indexOf(HB.resources + "/headless.js") !== -1);
     }
     var information = FS.attributesOfItemAtPathError($(folder), null);
     var changed = information.objectForKey("NSFileModificationDate");

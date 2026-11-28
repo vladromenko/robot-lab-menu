@@ -1,12 +1,12 @@
 # Homebrain
 
-Open one common laboratory workspace from your Mac. [Download Homebrain for Mac](https://github.com/vladromenko/robot-lab-menu/releases/download/v0.2.0/Homebrain_Mac_0.2.0.zip), extract it, and open Install Homebrain.command once. The installer creates Homebrain.app in ~/Applications/Homebrain Launcher. Open that app or pin it in the Dock for later launches.
+Open one common laboratory workspace from your Mac. [Download Homebrain for Mac](https://github.com/vladromenko/robot-lab-menu/releases/download/v0.2.0-mac.1/Homebrain_Mac_0.2.0_mac1.zip), extract it, and open Install Homebrain.command once. The installer creates Homebrain.app in ~/Applications/Homebrain Launcher. Open that app or pin it in the Dock for later launches.
 
-Initial setup asks for your existing Homebrain SSH alias or destination, the remote deployment handover directory, and an installed browser. Settings are saved on the Mac. The integration project publishes the common service descriptor and owns browser sessions and task restoration. Homebrain.app uses macOS Cocoa, JavaScript for Automation and OpenSSH. No Mac Python installation is needed for the main app.
+Initial setup asks for your existing Homebrain SSH alias or destination, the remote deployment handover directory, and an installed browser. Settings are saved on the Mac. The integration project publishes the common service descriptor and owns browser sessions and task restoration. Homebrain.app uses a native macOS applet, JavaScript for Automation and OpenSSH. Standard opening uses macOS Launch Services. No Mac Python installation is needed for the main app.
 
 See [Mac setup and recovery](docs/MAC_LAUNCHER.md) and the [short Russian installation guide](docs/INSTALL_RU.md).
 
-Preview status on 27 November 2026. Packaging and isolated SSH checks pass. The full authenticated launch is waiting for the integration project's actual deployment descriptor. The latest [real service check](docs/live-launcher-check.json) records that dependency. Mac Finder installation, browser Automation, viewer/gamepad/audio and sleep recovery still require attended Mac validation.
+Mac update on 28 November 2026. The actual deployment descriptor is available and the real browser handoff passes in Linux Chromium. The app was compiled, signed, installed and pinned in the Mac Dock. Chrome Apple events timed out, so this Mac uses standard Safari opening. See the [Mac installation check](docs/mac-install-check.json) and [browser handoff check](docs/browser-handoff-check.json). Visual page acceptance and viewer/gamepad/audio/sleep tests remain pending.
 
 The Robot Lab terminal menu remains available as a recovery option.
 

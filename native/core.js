@@ -41,6 +41,9 @@ function locator(value) {
     if (BROWSERS.indexOf(value.browser_bundle_id) === -1) {
         fail("Select an installed supported browser in Connection Settings.");
     }
+    if (value.browser_open_mode && ["automation", "standard"].indexOf(value.browser_open_mode) === -1) {
+        fail("The saved browser opening mode is unsupported.");
+    }
     return value;
 }
 
